@@ -1,65 +1,46 @@
-import { FlatList, StyleSheet, Text, View,ActivityIndicator } from 'react-native'
-import React, {useEffect, useState} from 'react'
-import NewListItem from '../home/NewListItem';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React from 'react';
 import Colors from '../../constant/Colors';
 
-export default function ProductListItem() {
-
-  const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState()
-
-  const getProducts = async () => {
-    try {
-      const response = await fetch('https://fakestoreapi.com/products');
-      const json = await response.json();
-      setData(json);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    getProducts();
-  }, []);
+export default function ProductListItem({ product, onPress }) {
   return (
-    <View style={styles.listContainer}>
-      {isLoading?<ActivityIndicator/>:
-          (
-            <FlatList
-            style={styles.productList}
-            data ={data}
-            horizontal={false}
-            numColumns={2}
-            key={2}
-            keyExtractor={({id}) => id}
-          renderItem={({item}) => (
-            <NewListItem iconText={'-15%'} iconbackground={Colors.primaryColor}
-            price={item.price} 
-             category={item.category}
-             name={item.title}
-             review={item.rating.rate}
-             imageUrl={item.image}
-             boxstyle={180}
-            />
-          )}
-            />
-          )
-          }  
-    </View>
-  )
+    <TouchableOpacity onPress={onPress} style={styles.container}>
+      <Image source={{ uri: product.image }} style={styles.image} />
+      <Text style={styles.title}>{product.title}</Text>
+      <Text style={styles.price}>{`$${product.price.toFixed(2)}`}</Text>
+    </TouchableOpacity>
+  );
 }
 
 const styles = StyleSheet.create({
-  listContainer:{
-    justifyContent:'center',
-    alignItems:"center",
-    backgroundColor:Colors.primaryBackgroundColor
+  container: {
+    flex: 1,
+    backgroundColor: Colors.whiteColor,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    padding: 10,
+    margin: 5,
   },
-  productList:{
+  image: {
+    width: '100%',
+    height: 150,
+    borderRadius: 10,
+    marginBottom: 5,
   },
-  itemBox:{
-    width:180
-  }
-})
+  title: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  price: {
+    fontSize: 14,
+    color: Colors.primaryColor,
+  },
+});

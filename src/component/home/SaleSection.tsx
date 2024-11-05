@@ -1,11 +1,13 @@
-import { StyleSheet, Text, View,ScrollView,ActivityIndicator,FlatList } from 'react-native'
-import React, {useEffect,useState} from 'react'
-import NewListItem from './NewListItem'
-import Colors from '../../constant/Colors'
+import { StyleSheet, Text, View, ActivityIndicator, FlatList, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import NewListItem from './NewListItem';
+import Colors from '../../constant/Colors';
+import { useNavigation } from '@react-navigation/native';
 
 export default function SaleSection() {
+  const navigation = useNavigation();
   const [isLoading, setLoading] = useState(true);
-  const [data, setData] = useState()
+  const [data, setData] = useState([]);
 
   const getProducts = async () => {
     try {
@@ -22,77 +24,77 @@ export default function SaleSection() {
   useEffect(() => {
     getProducts();
   }, []);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerView}>
         <View style={styles.newView}>
-          <Text style={styles.newText}>Sale</Text>
-          <Text style={styles.viewAllText}>view all</Text>
+          <Text style={styles.newText}>Sản phẩm giảm giá</Text>
+         
+            <Text style={styles.viewAllText}>Xem tất cả</Text>
+        
         </View>
-        <Text style={styles.subHeadingText}>Super summer sale</Text>
+       
         <View style={styles.listItemView}>
-          <ScrollView horizontal={true}>
-          {/* <NewListItem iconText={'-20%'} iconbackground={Colors.primaryColor}/>
-          <NewListItem iconText={'-10%'} iconbackground={Colors.primaryColor}/>
-          <NewListItem iconText={'-15%'} iconbackground={Colors.primaryColor}/>
-          <NewListItem iconText={'-30%'} iconbackground={Colors.primaryColor}/>
-          <NewListItem iconText={'-20%'} iconbackground={Colors.primaryColor}/> */}
-          </ScrollView>
-          {isLoading?<ActivityIndicator/>:
-          (
+          {isLoading ? (
+            <ActivityIndicator />
+          ) : (
             <FlatList
-            data ={data}
-            horizontal
-            keyExtractor={({id}) => id}
-          renderItem={({item}) => (
-             <NewListItem iconText={'-20%'} iconbackground={Colors.primaryColor} price={item.price} 
-             category={item.category}
-             name={item.title}
-             review={item.rating.rate}
-             imageUrl={item.image}
-             />
-          )}
+              data={data}
+              horizontal
+              keyExtractor={({ id }) => id.toString()}
+              renderItem={({ item }) => (
+                <NewListItem
+                  iconText="-20%"
+                  iconbackground={Colors.primaryColor || '#FF6347'} // Màu dự phòng
+                  price={item.price}
+                  category={item.category}
+                  name={item.title}
+                  review={item.rating?.rate || 0} // Kiểm tra rating
+                  imageUrl={item.image}
+                />
+              )}
             />
-          )
-          } 
+          )}
         </View>
       </View>
     </View>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  container:{
-    flex:1,
-    marginTop:5,
-    marginLeft:10
+  container: {
+    flex: 1,
+    marginTop: 5,
+    marginLeft: 10,
   },
-  headerView:{
-    flex:1,
-    paddingLeft:1,
-    paddingRight:10
+  headerView: {
+    flex: 1,
+    paddingLeft: 1,
+    paddingRight: 10,
   },
-  newView:{
-    flex:1,
-    flexDirection:'row',
-    justifyContent:'space-between',
-    alignItems:'center',
-    paddingLeft:1,
+  newView: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingLeft: 1,
   },
-  newText:{
-    fontSize:35,
-    fontWeight:'bold'
+  newText: {
+    fontSize: 35,
+    fontWeight: 'bold',
   },
-  subHeadingText:{
-    color:Colors.textGray
+  subHeadingText: {
+    color: Colors.textGray,
   },
-  viewAllText:{
-    alignItems:'center',
-    justifyContent:'center'
+  viewAllText: {
+    color: Colors.primary || '#0000FF',
+    fontSize: 16,
+    fontWeight: 'bold',
   },
-  listItemView:{
-    marginBottom:10,
-    marginTop:10,
-    marginLeft:10
-  }
-})
+  listItemView: {
+    marginBottom: 10,
+    marginTop: 10,
+    marginLeft: 10,
+  },
+});
